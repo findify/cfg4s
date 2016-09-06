@@ -1,0 +1,16 @@
+.cache*
+.classpath
+.project
+.worksheet/
+.settings
+
+
+bin/
+data/
+project/project/*
+project/target/*
+src/main/target
+target/
+project/eclipse.sbt
+
+.idea
