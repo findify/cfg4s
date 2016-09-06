@@ -20,6 +20,6 @@ class ConfigMapTest extends FlatSpec with Matchers {
   it should "load nested configs" in {
     val conf = new Config[TestConfNested](map, classOf[TestConfNested])
     val result = Await.result(conf.get, 10.seconds)
-    result shouldBe TestConfNested("foo", TestConfPlain("bar"))
+    result shouldBe TestConfNested("foo", TestConfPlain("zzz"))
   }
 }
