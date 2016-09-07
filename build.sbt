@@ -13,6 +13,7 @@ lazy val core = (project in file("core"))
     name := "cfg4s-core",
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-reflect" % "2.11.8",
+      "com.typesafe.scala-logging" %% "scala-logging" % "3.4.0",
       "org.scalatest" %% "scalatest" % "3.0.0" % "test"
     )
   )
@@ -24,6 +25,7 @@ lazy val consul = (project in file("consul"))
     name := "cfg4s-consul",
     libraryDependencies ++= Seq(
       "org.json4s" %% "json4s-native" % "3.4.0",
+      "com.github.dcshock" % "consul-rest-client" % "0.11",
       "com.pszymczyk.consul" % "embedded-consul" % "0.1.9" % "test"
     )
   )

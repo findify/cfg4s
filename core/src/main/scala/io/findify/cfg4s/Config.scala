@@ -1,7 +1,6 @@
 package io.findify.cfg4s
 
 import io.findify.cfg4s.provider.Provider
-import io.findify.cfg4s.value.{ObjectValue, StringValue}
 
 import scala.concurrent.Future
 import scala.reflect.ClassTag
@@ -16,13 +15,10 @@ class Config[T:TypeTag](provider:Provider, clazz:Class[T]) {
     import scala.concurrent.ExecutionContext.Implicits.global
     val constr = constructorFor(clazz)
     Future.sequence(symbols(constr).map(symbol => symbol.typeSignature.resultType.toString match {
-      case "String" => provider.load(List(symbol.name.toString))
+      case "String" => provider.loadString(List(symbol.name.toString))
+      case "Int" => provider.loadInt(List(symbol.name.toString))
       case other => loadObject(List(symbol.name.toString), other)
     }))
-      .map(values => values.map {
-        case StringValue(name, value) => value
-        case ObjectValue(name, value) => value
-      })
       .map(args => constr(args: _*).asInstanceOf[T])
   }
 
@@ -49,17 +45,13 @@ class Config[T:TypeTag](provider:Provider, clazz:Class[T]) {
 
   private def symbols(c:MethodMirror) = c.symbol.paramLists.flatten
 
-  private def loadObject(path:List[String], name:String):Future[ObjectValue] = {
+  private def loadObject(path:List[String], name:String):Future[Any] = {
     import scala.concurrent.ExecutionContext.Implicits.global
     val constr = nestedFor(name)
     Future.sequence(symbols(constr).map(symbol => symbol.typeSignature.resultType.toString match {
-      case "String" => provider.load(path ++ List(symbol.name.toString))
+      case "String" => provider.loadString(path ++ List(symbol.name.toString))
       case other => loadObject(path ++ List(symbol.name.toString), other)
     }))
-      .map(values => values.map {
-        case StringValue(_, value) => value
-        case ObjectValue(_, value) => value
-      })
-      .map(args => ObjectValue("", constr.apply(args: _*)))
+      .map(args => constr.apply(args: _*))
   }
 }
