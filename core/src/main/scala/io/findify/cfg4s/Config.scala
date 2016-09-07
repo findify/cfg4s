@@ -50,6 +50,7 @@ class Config[T:TypeTag](provider:Provider, clazz:Class[T]) {
     val constr = nestedFor(name)
     Future.sequence(symbols(constr).map(symbol => symbol.typeSignature.resultType.toString match {
       case "String" => provider.loadString(path ++ List(symbol.name.toString))
+      case "Int" => provider.loadInt(path ++ List(symbol.name.toString))
       case other => loadObject(path ++ List(symbol.name.toString), other)
     }))
       .map(args => constr.apply(args: _*))

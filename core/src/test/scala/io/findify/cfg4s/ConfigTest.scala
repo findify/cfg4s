@@ -11,7 +11,8 @@ import scala.concurrent.duration._
 case class TestConfPlain(foo:String)
 case class TestConfNested(bar:String, qux:TestConfPlain)
 case class TestConfInt(foo:String, bar:Int)
-class ConfigMapTest extends FlatSpec with Matchers {
+
+class ConfigTest extends FlatSpec with Matchers {
   import scala.concurrent.ExecutionContext.Implicits.global
   val map = new MapProvider(Map("foo" -> "bar", "bar" -> "foo", "qux.foo" -> "zzz"))
   "config map" should "load plain data" in {
