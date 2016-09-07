@@ -9,7 +9,10 @@ lazy val commonSettings = Seq(
     "com.typesafe.scala-logging" %% "scala-logging" % "3.4.0",
     "org.scalatest" %% "scalatest" % "3.0.0" % "test",
     "ch.qos.logback" % "logback-classic" % "1.1.7" % "test"
-  )
+  ),
+  licenses += ("MIT", url("https://opensource.org/licenses/MIT")),
+  bintrayOrganization := Some("findify"),
+  parallelExecution in Test := false
 )
 
 lazy val core = (project in file("core"))

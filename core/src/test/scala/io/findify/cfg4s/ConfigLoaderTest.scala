@@ -12,22 +12,22 @@ case class TestConfPlain(foo:String)
 case class TestConfNested(bar:String, qux:TestConfPlain)
 case class TestConfInt(foo:String, bar:Int)
 
-class ConfigTest extends FlatSpec with Matchers {
+class ConfigLoaderTest extends FlatSpec with Matchers {
   import scala.concurrent.ExecutionContext.Implicits.global
   val map = new MapProvider(Map("foo" -> "bar", "bar" -> "foo", "qux.foo" -> "zzz"))
   "config map" should "load plain data" in {
-    val conf = new Config[TestConfPlain](map, classOf[TestConfPlain])
+    val conf = new ConfigLoader[TestConfPlain](map, classOf[TestConfPlain])
     val result = Await.result(conf.get, 10.seconds)
     result shouldBe TestConfPlain("bar")
   }
   it should "load nested configs" in {
-    val conf = new Config[TestConfNested](map, classOf[TestConfNested])
+    val conf = new ConfigLoader[TestConfNested](map, classOf[TestConfNested])
     val result = Await.result(conf.get, 10.seconds)
     result shouldBe TestConfNested("foo", TestConfPlain("zzz"))
   }
   it should "load ints" in {
     val map = new MapProvider(Map("foo" -> "bar", "bar" -> "1"))
-    val conf = new Config[TestConfInt](map, classOf[TestConfInt])
+    val conf = new ConfigLoader[TestConfInt](map, classOf[TestConfInt])
     val result = Await.result(conf.get, 10.seconds)
     result shouldBe TestConfInt("bar", 1)
   }

@@ -8,7 +8,7 @@ import scala.reflect.runtime.universe.{TypeTag, runtimeMirror, termNames, Method
 /**
   * Created by shutty on 9/6/16.
   */
-class Config[T:TypeTag](provider:Provider, clazz:Class[T]) {
+class ConfigLoader[T:TypeTag](provider:Provider, clazz:Class[T]) {
 
 
   def get:Future[T] = {
@@ -56,3 +56,4 @@ class Config[T:TypeTag](provider:Provider, clazz:Class[T]) {
       .map(args => constr.apply(args: _*))
   }
 }
+
