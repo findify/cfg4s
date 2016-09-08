@@ -17,7 +17,8 @@ class CachedConfig[T: TypeTag](provider: Provider, clazz: Class[T])(implicit ec:
   private var lastUpdate = System.currentTimeMillis()
 
   def get(timeout:Duration = 10.seconds) = {
-    if ((System.currentTimeMillis() - lastUpdate) > timeout.toMillis) {
+    val now = System.currentTimeMillis()
+    if ((now - lastUpdate) > timeout.toMillis) {
       logger.debug(s"scheduling config update for $clazz")
       updatingConf = loader.get
       updatingConf.onSuccess {
@@ -28,6 +29,7 @@ class CachedConfig[T: TypeTag](provider: Provider, clazz: Class[T])(implicit ec:
       }
       currentConf
     } else {
+      logger.debug(s"passed ${now - lastUpdate} of ${timeout.toMillis}, returning cached config")
       currentConf
     }
   }
