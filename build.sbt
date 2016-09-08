@@ -1,7 +1,7 @@
 lazy val commonSettings = Seq(
   scalaVersion := "2.11.8",
-  version := "0.0.1",
-  organization := "findify",
+  version := "0.0.3",
+  organization := "io.findify",
   updateOptions := updateOptions.value.withCachedResolution(true),
   parallelExecution in ThisBuild := false,
   parallelExecution in Test := false,
@@ -31,6 +31,13 @@ lazy val consul = (project in file("consul"))
     name := "cfg4s-consul",
     libraryDependencies ++= Seq(
       "com.github.dcshock" % "consul-rest-client" % "0.11",
-      "com.pszymczyk.consul" % "embedded-consul" % "0.1.9" % "test"
+      "com.pszymczyk.consul" % "embedded-consul" % "0.1.10" % "test"
     )
   )
+
+lazy val root = (project in file("."))
+  .aggregate(core, consul)
+    .settings(
+      publishArtifact := false,
+      bintrayReleaseOnPublish := false
+    )
