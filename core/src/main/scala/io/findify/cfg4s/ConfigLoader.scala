@@ -14,12 +14,16 @@ class ConfigLoader[T:TypeTag](provider:Provider, clazz:Class[T]) {
   def get:Future[T] = {
     import scala.concurrent.ExecutionContext.Implicits.global
     val constr = constructorFor(clazz)
-    Future.sequence(symbols(constr).map(symbol => symbol.typeSignature.resultType.toString match {
-      case "String" => provider.loadString(List(symbol.name.toString))
-      case "Int" => provider.loadInt(List(symbol.name.toString))
-      case other => loadObject(List(symbol.name.toString), other)
-    }))
-      .map(args => constr(args: _*).asInstanceOf[T])
+    for {
+      _ <- provider.open
+      result <- Future.sequence(symbols(constr).map(symbol => symbol.typeSignature.resultType.toString match {
+        case "String" => provider.loadString(List(symbol.name.toString))
+        case "Int" => provider.loadInt(List(symbol.name.toString))
+        case other => loadObject(List(symbol.name.toString), other)
+      })).map(args => constr(args: _*).asInstanceOf[T])
+      _ <- provider.close
+    } yield result
+
   }
 
   private def constructorFor[N:TypeTag](cl:Class[N]) = {

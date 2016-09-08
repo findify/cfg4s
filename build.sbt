@@ -1,6 +1,6 @@
 lazy val commonSettings = Seq(
   scalaVersion := "2.11.8",
-  version := "0.0.3",
+  version := "0.0.4",
   organization := "io.findify",
   updateOptions := updateOptions.value.withCachedResolution(true),
   parallelExecution in ThisBuild := false,
@@ -35,9 +35,20 @@ lazy val consul = (project in file("consul"))
     )
   )
 
+lazy val json = (project in file("json"))
+  .dependsOn(core)
+  .settings(commonSettings: _*)
+  .settings(
+    name := "cfg4s-json",
+    libraryDependencies ++= Seq(
+      "org.json4s" %% "json4s-native" % "3.4.0"
+    )
+  )
+
 lazy val root = (project in file("."))
   .aggregate(core, consul)
     .settings(
       publishArtifact := false,
-      bintrayReleaseOnPublish := false
+      bintrayReleaseOnPublish := false,
+      bintrayOmitLicense := true
     )
